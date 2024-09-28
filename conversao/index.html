@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversão Binário-Decimal Passo a Passo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Conversão Binário-Decimal Passo a Passo</h1>
+    </header>
+
+    <section id="tutorial">
+        <h2>O que é Conversão Binário-Decimal?</h2>
+        <p>O sistema binário utiliza apenas dois dígitos, 0 e 1, para representar números. Já o sistema decimal usa dez
+            dígitos (0 a 9). A conversão entre binário e decimal é importante para entender como computadores manipulam
+            números.</p>
+        <h3>Exemplo de Conversão Binário para Decimal:</h3>
+        <p>O número binário <code>1011</code> é convertido para decimal da seguinte forma:</p>
+        <p>
+            <code>1 * 2^3 + 0 * 2^2 + 1 * 2^1 + 1 * 2^0 = 11 (decimal)</code>
+        </p>
+
+        <h3>Exemplo de Conversão Decimal para Binário:</h3>
+        <p>O número decimal <code>13</code> pode ser convertido para binário dividindo o número por 2 e registrando os
+            restos:</p>
+        <ul>
+            <li>13 ÷ 2 = 6, resto = 1</li>
+            <li>6 ÷ 2 = 3, resto = 0</li>
+            <li>3 ÷ 2 = 1, resto = 1</li>
+            <li>1 ÷ 2 = 0, resto = 1</li>
+        </ul>
+        <p>Então, o número binário correspondente é <code>1101</code>.</p>
+    </section>
+
+    <section id="calculator">
+        <h2>Calculadora de Conversão Passo a Passo</h2>
+
+        <div class="input-section">
+            <label for="conversionType">Tipo de Conversão:</label>
+            <select id="conversionType">
+                <option value="binToDec">Binário para Decimal</option>
+                <option value="decToBin">Decimal para Binário</option>
+            </select>
+        </div>
+
+        <div class="input-section">
+            <label for="numberInput">Número:</label>
+            <input type="text" id="numberInput" placeholder="Digite um número">
+        </div>
+
+        <button id="startBtn">Iniciar Conversão</button>
+
+        <h3>Passo a Passo:</h3>
+
+        <div id="controls">
+            <button id="prevStepBtn">Anterior</button>
+            <button id="nextStepBtn">Próximo</button>
+            <button id="autoStepBtn">Automático</button>
+            <button id="pauseStepBtn">Pausar</button>
+        </div>
+
+        <div id="steps"></div>
+
+        <!-- <div> Icons made by <a href="https://www.flaticon.com/authors/fach" title="FACH"> FACH </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div> -->
+
+
+    </section>
+
+    <script>
+        let steps = [];
+        let currentStep = 0;
+        let autoInterval;
+        const stepInterval = 2500;  // 2.5 segundos entre os passos no modo automático
+
+        document.getElementById("startBtn").addEventListener("click", function () {
+            resetSteps();  // Limpar passos anteriores
+
+            const conversionType = document.getElementById("conversionType").value;
+            const numberInput = document.getElementById("numberInput").value;
+
+            steps = [];
+            currentStep = 0;
+
+            if (conversionType === "binToDec") {
+                if (/^[01]+$/.test(numberInput)) {
+                    let decimal = 0;
+                    const binArray = numberInput.split("").reverse();
+                    steps.push(`Número binário: ${numberInput}`);
+
+                    for (let i = 0; i < binArray.length; i++) {
+                        let bit = parseInt(binArray[i], 2);
+                        decimal += bit * Math.pow(2, i);
+                        steps.push(`Bit ${bit} na posição ${i}: ${bit} * 2^${i} = ${bit * Math.pow(2, i)}`);
+                    }
+                    steps.push(`Resultado decimal: ${decimal}`);
+                } else {
+                    steps.push("Entrada inválida para binário!");
+                }
+            } else if (conversionType === "decToBin") {
+                const decimalNumber = parseInt(numberInput, 10);
+                if (!isNaN(decimalNumber)) {
+                    let binary = '';
+                    let power = Math.floor(Math.log2(decimalNumber));
+                    steps.push(`Número decimal: ${decimalNumber}`);
+                    steps.push(`Maior potência de 2 menor ou igual a ${decimalNumber} é 2^${power}`);
+
+                    let remaining = decimalNumber;
+                    while (power >= 0) {
+                        let value = Math.pow(2, power);
+                        if (remaining >= value) {
+                            binary += '1';
+                            steps.push(`${remaining} - ${value} = ${remaining - value}`);
+                            remaining -= value;
+                        } else {
+                            binary += '0';
+                        }
+                        power--;
+                    }
+
+                    steps.push(`Resultado binário: ${binary}`);
+                } else {
+                    steps.push("Entrada inválida para decimal!");
+                }
+            }
+
+            displayStep();
+        });
+
+        document.getElementById("prevStepBtn").addEventListener("click", function () {
+            if (currentStep > 0) {
+                currentStep--;
+                removeLastStep();
+            }
+        });
+
+        document.getElementById("nextStepBtn").addEventListener("click", function () {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                displayStep();
+            }
+        });
+
+        document.getElementById("autoStepBtn").addEventListener("click", function () {
+            // Se a conversão já terminou, reiniciar
+            if (currentStep === steps.length - 1 || currentStep === steps.length) {
+                resetSteps();
+                currentStep = 0;
+            }
+
+            autoInterval = setInterval(function () {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    displayStep();
+                } else {
+                    clearInterval(autoInterval);
+                }
+            }, stepInterval);
+        });
+
+        document.getElementById("pauseStepBtn").addEventListener("click", function () {
+            clearInterval(autoInterval);
+        });
+
+        function displayStep() {
+            const stepDiv = document.getElementById("steps");
+
+            // Adiciona o passo atual ao conteúdo existente
+            stepDiv.innerHTML += `<p>${steps[currentStep]}</p>`;
+        }
+
+        function removeLastStep() {
+            const stepDiv = document.getElementById("steps");
+            const lastStep = stepDiv.lastElementChild;
+
+            if (lastStep) {
+                stepDiv.removeChild(lastStep);  // Remove o último passo exibido
+            }
+        }
+
+        function resetSteps() {
+            document.getElementById("steps").innerHTML = "";  // Limpa todos os passos
+            clearInterval(autoInterval);  // Pausa qualquer execução automática anterior
+        }
+
+    </script>
+</body>
+
+</html>
