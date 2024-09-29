@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversão Binário-Decimal Passo a Passo</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <h1>Conversão Binário-Decimal Passo a Passo</h1>
@@ -14,24 +16,30 @@
     <section id="tutorial">
         <div id="tutorial-header" onclick="toggleTutorial()">
             <h2>O que é Conversão Binário-Decimal?</h2>
-            <p id="minimizeOrExpand">-</p>
-            <!-- <img id="minimizeOrExpand" src="icons/expand.png" alt="minimize"> -->
+            <button id="toggleTutorialBtn">Mostrar</button>
         </div>
-        <div id="tutorial-content">
-            <p>O sistema binário utiliza apenas dois dígitos, 0 e 1, para representar números. Já o sistema decimal usa dez dígitos (0 a 9). A conversão entre binário e decimal é importante para entender como computadores manipulam números.</p>
+        <div id="tutorial-content" style="display: none;">
+            <p>O sistema binário utiliza apenas dois dígitos, 0 e 1, para representar números. Já o sistema decimal usa
+                dez dígitos (0 a 9). A conversão entre binário e decimal é importante para entender como computadores
+                manipulam números.</p>
             <h3>Exemplo de Conversão Binário para Decimal:</h3>
             <p>O número binário <code>1101</code> é convertido para decimal da seguinte forma:</p>
             <p>
                 <code>(1 * 2^3) + (1 * 2^2) + (0 * 2^1) + (1 * 2^0) = 13 (decimal)</code>
             </p>
+            <p>
+                <code>(1 *  8) + (1 * 4) + (0 * 2) + (1 * 1) = 13 (decimal)</code>
+            </p>
             <h3>Exemplo de Conversão Decimal para Binário:</h3>
-            <p>O número decimal <code>13</code> pode ser convertido para binário dividindo o número por 2 e registrando os restos:</p>
+            <p>O número decimal <code>13</code> pode ser convertido para binário dividindo o número por 2 e registrando
+                os restos:</p>
             <ul>
                 <li>13 ÷ 2 = 6, resto = 1</li>
                 <li>6 ÷ 2 = 3, resto = 0</li>
                 <li>3 ÷ 2 = 1, resto = 1</li>
                 <li>1 ÷ 2 = 0, resto = 1</li>
             </ul>
+            <p>Basta juntar os valores do resto, do final para o começo</p>
             <p>Então, o número binário correspondente é <code>1101</code>.</p>
         </div>
     </section>
@@ -55,7 +63,6 @@
         <h3>Passo a Passo:</h3>
 
         <div id="controls">
-            <img id="reloadBtn" src="icons/reload.png" alt="Reiniciar">
             <img id="prevStepBtn" src="icons/last.png" alt="Anterior">
             <img id="pauseStepBtn" src="icons/pause.png" alt="Pausar">
             <img id="playStepBtn" src="icons/play.png" alt="Play">
@@ -66,133 +73,7 @@
         <div id="steps"></div>
     </section>
 
-    <script>
-        let steps = [];
-        let currentStep = 0;
-        let autoInterval;
-        const stepInterval = 2500;
-
-        function toggleTutorial() {
-            const minimizeOrExpand = document.getElementById("minimizeOrExpand");
-            const tutorialContent = document.getElementById("tutorial-content");
-            tutorialContent.style.display = (tutorialContent.style.display === "none") ? "block" : "none";
-            // minimizeOrExpand.querySelector("img").src = (tutorialContent.style.display === "none") ? "icons/minimize.png" : "icons/expand.png";
-            minimizeOrExpand.textContent = (tutorialContent.style.display === "none") ? "+" : "-";
-
-        }
-
-        document.getElementById("startBtn").addEventListener("click", function () {
-            resetSteps();
-            const conversionType = document.querySelector('input[name="conversionType"]:checked').value;
-            const numberInput = parseInt(document.getElementById("numberInput").value, 10).toString();
-            steps = [];
-            currentStep = 0;
-
-            if (conversionType === "binToDec") {
-                if (/^[01]+$/.test(numberInput)) {
-                    let decimal = 0;
-                    const binArray = numberInput.split("").reverse();
-                    steps.push(`Número binário: ${numberInput}`);
-                    for (let i = 0; i < binArray.length; i++) {
-                        let bit = parseInt(binArray[i], 2);
-                        decimal += bit * Math.pow(2, i);
-                        steps.push(`Bit ${bit} na posição ${i}: ${bit} * 2^${i} = ${bit * Math.pow(2, i)}`);
-                    }
-                    steps.push(`Resultado decimal: ${decimal}`);
-                } else {
-                    steps.push("Entrada inválida para binário!");
-                }
-            } else if (conversionType === "decToBin") {
-                const decimalNumber = parseInt(numberInput, 10);
-                if (!isNaN(decimalNumber)) {
-                    let binary = '';
-                    let remaining = decimalNumber;
-                    steps.push(`Número decimal: ${decimalNumber}`);
-
-                    while (remaining > 0) {
-                        let quotient = Math.floor(remaining / 2);
-                        let remainder = remaining % 2;
-                        steps.push(`${remaining} ÷ 2 = ${quotient}, resto = ${remainder}`);
-                        binary = remainder + binary;
-                        remaining = quotient;
-                    }
-                    steps.push(`Os restos formam o número binário: ${binary}`);
-                } else {
-                    steps.push("Entrada inválida para decimal!");
-                }
-            }
-
-            displayStep();
-            autoStart();
-        });
-
-        function autoStart() {
-            autoInterval = setInterval(function () {
-                if (currentStep < steps.length - 1) {
-                    currentStep++;
-                    displayStep();
-                } else {
-                    clearInterval(autoInterval);
-                }
-            }, stepInterval);
-        }
-
-        document.getElementById("reloadBtn").addEventListener("click", function () {
-            resetSteps();
-        });
-
-        document.getElementById("prevStepBtn").addEventListener("click", function () {
-            if (currentStep > 0) {
-                currentStep--;
-                removeLastStep();
-            }
-        });
-
-        document.getElementById("pauseStepBtn").addEventListener("click", function () {
-            clearInterval(autoInterval);
-        });
-
-        document.getElementById("playStepBtn").addEventListener("click", function () {
-            autoStart();
-        });
-
-        document.getElementById("nextStepBtn").addEventListener("click", function () {
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                displayStep();
-                clearInterval(autoInterval);
-            }
-        });
-
-        document.getElementById("finishStepBtn").addEventListener("click", function () {
-            currentStep = steps.length - 1;
-            displayAllSteps();
-            clearInterval(autoInterval);
-        });
-
-        function displayStep() {
-            const stepDiv = document.getElementById("steps");
-            stepDiv.innerHTML += `<p>${steps[currentStep]}</p>`;
-        }
-
-        function removeLastStep() {
-            const stepDiv = document.getElementById("steps");
-            const lastStep = stepDiv.lastElementChild;
-            if (lastStep) {
-                stepDiv.removeChild(lastStep);
-            }
-        }
-
-        function resetSteps() {
-            document.getElementById("steps").innerHTML = "";
-            clearInterval(autoInterval);
-            steps = [];
-        }
-
-        function displayAllSteps() {
-            const stepDiv = document.getElementById("steps");
-            stepDiv.innerHTML = steps.map(step => `<p>${step}</p>`).join('');
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
+
 </html>

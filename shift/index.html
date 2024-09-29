@@ -1,46 +1,56 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Shift Binário</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <header>
         <h1>Shift Binário</h1>
     </header>
 
-    <section id="content">
-        <h2>O que é Shift Binário?</h2>
-        <p>Shift binário é uma operação que move os bits de um número para a esquerda ou para a direita. Existem dois tipos principais:</p>
-        <ul>
-            <li><strong>Shift à esquerda (<<):</strong> Move todos os bits para a esquerda, preenchendo os bits à direita com 0. Isso multiplica o número por 2.</li>
-            <li><strong>Shift à direita (>>):</strong> Move todos os bits para a direita. Para números positivos, os bits à esquerda são preenchidos com 0. Isso divide o número por 2.</li>
-        </ul>
-        <h3>Exemplos:</h3>
-        <ul>
-            <li><strong>Shift à esquerda (<<):</strong><br>
-            Número 5 em binário: <code>00000101</code> (decimal 5)<br>
-            Shift à esquerda por 1 bit: <code>00001010</code> (decimal 10)<br>
-            Neste caso, multiplicamos o número por 2 (5 * 2 = 10).</li>
+    <section id="tutorial">
 
-            <li><strong>Shift à direita (>>):</strong><br>
-            Número 20 em binário: <code>00010100</code> (decimal 20)<br>
-            Shift à direita por 2 bits: <code>00000101</code> (decimal 5)<br>
-            Neste caso, dividimos o número por 4 (20 / 4 = 5).</li>
-        </ul>
+        <div id="tutorial-header" onclick="toggleTutorial()">
+            <h2>O que é Shift Binário?</h2>
+            <button id="toggleTutorialBtn">Mostrar</button>
+        </div>
+        <div id="tutorialContent" style="display: none;">
+            <p>Shift binário é uma operação que move os bits de um número para a esquerda ou para a direita. Existem
+                dois
+                tipos principais:</p>
+            <ul>
+                <li><strong>Shift à esquerda (<<):< /strong> Move todos os bits para a esquerda, preenchendo os bits à
+                            direita com 0. Isso multiplica o número por 2.</li>
+                <li><strong>Shift à direita (>>):</strong> Move todos os bits para a direita. Para números positivos, os
+                    bits à esquerda são preenchidos com 0. Isso divide o número por 2.</li>
+            </ul>
+            <h3>Exemplos:</h3>
+            <ul>
+                <li><strong>Shift à esquerda (<<):< /strong><br>
+                            Número 5 em binário: <code>00000101</code> (decimal 5)<br>
+                            Shift à esquerda por 1 bit: <code>00001010</code> (decimal 10)<br>
+                            Neste caso, multiplicamos o número por 2 (5 * 2 = 10).</li>
+
+                <li><strong>Shift à direita (>>):</strong><br>
+                    Número 20 em binário: <code>00010100</code> (decimal 20)<br>
+                    Shift à direita por 2 bits: <code>00000101</code> (decimal 5)<br>
+                    Neste caso, dividimos o número por 4 (20 / 4 = 5).</li>
+            </ul>
+        </div>
     </section>
 
     <section id="calculator">
         <h2>Calculadora de Shift Binário</h2>
 
         <div class="input-section">
-            <label for="inputType">Tipo de Entrada:</label>
-            <select id="inputType">
-                <option value="decimal">Decimal</option>
-                <option value="binary">Binário</option>
-            </select>
+            <label>Tipo de Entrada:</label>
+            <label><input type="radio" name="inputType" value="binary" checked> Binário</label>
+            <label><input type="radio" name="inputType" value="decimal"> Decimal</label>
         </div>
 
         <div class="input-section">
@@ -49,11 +59,9 @@
         </div>
 
         <div class="input-section">
-            <label for="shiftType">Tipo de Shift:</label>
-            <select id="shiftType">
-                <option value="left">Shift à Esquerda (<<)</option>
-                <option value="right">Shift à Direita (>>)</option>
-            </select>
+            <label>Tipo de Shift:</label>
+            <label><input type="radio" name="shiftType" value="left" checked> À Esquerda (<<) </label>
+                    <label><input type="radio" name="shiftType" value="right"> À Direita (>>)</label>
         </div>
 
         <div class="input-section">
@@ -62,11 +70,9 @@
         </div>
 
         <div class="input-section">
-            <label for="outputType">Tipo de Saída:</label>
-            <select id="outputType">
-                <option value="decimal">Decimal</option>
-                <option value="binary">Binário</option>
-            </select>
+            <label>Tipo de Saída:</label>
+            <label><input type="radio" name="outputType" value="binary" checked> Binário</label>
+            <label><input type="radio" name="outputType" value="decimal"> Decimal</label>
         </div>
 
         <button id="calculateBtn">Calcular</button>
@@ -77,4 +83,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
